@@ -1,11 +1,11 @@
 //! RCP - MIPS Interface
 
+use crate::{RO, RW};
 use core::ops::Deref;
 use proc_bitfield::bitfield;
-use crate::{RO, RW};
 
 /// A wrapper around a mutable reference to the MIPS Interface's memory mapped registers.
-/// 
+///
 /// See [`MipsInterface::new()`] for usage details.
 pub struct MipsInterface {
     r: &'static mut RegisterBlock,
@@ -20,27 +20,29 @@ pub struct RegisterBlock {
 }
 impl MipsInterface {
     /// Creates a new wrapped mutable reference to the MIPS Interface's memory mapped registers, starting at `0xA4300000`.
-    /// 
+    ///
     /// Developers are recommended to use [`Hardware::take()`][crate::Hardware::take()] instead.
     /// But for unrestricted, unsafe, access, this struct provides a method-based version to the
     /// static functions available at the [module][crate::mi] level.
-    /// 
+    ///
     /// # Safety
     /// This provides unrestricted access to memory mapped registers. Data races _could_ occur if writing
     /// to a register in both regular code and inside interrupt handlers.
-    /// 
+    ///
     /// This is especially problematic if performing a read-modify-write operation; an interrupt
     /// could trigger between reading a register, and writing a modified value back to the same
     /// register. Thus anything written to that register inside the interrupt, would only apply for
     /// a short moment before being overwritten.
     #[inline(always)]
-    pub unsafe fn new() -> Self { Self {
-        r: &mut *(0xA4300000 as *mut RegisterBlock)
-    }}
+    pub unsafe fn new() -> Self {
+        Self {
+            r: &mut *(0xA4300000 as *mut RegisterBlock),
+        }
+    }
 }
 impl Deref for MipsInterface {
     type Target = RegisterBlock;
-    
+
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         self.r
@@ -51,7 +53,6 @@ regfn_rw_union!(MipsInterface, mode, MODE, ModeReg);
 regfn_ro!(MipsInterface, version, VERSION, VersionReg);
 regfn_ro!(MipsInterface, interrupt, INTERRUPT, InterruptReg);
 regfn_rw_union!(MipsInterface, mask, MASK, MaskReg);
-
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -89,39 +90,37 @@ impl ModeRegWrite {
     pub fn clear_init_mode(self) -> Self {
         self.with_clear_init_mode(true)
     }
-    
+
     #[inline(always)]
     pub fn set_init_mode(self) -> Self {
         self.with_set_init_mode(true)
     }
-    
+
     #[inline(always)]
     pub fn clear_ebus_test_mode(self) -> Self {
         self.with_clear_ebus_test_mode(true)
     }
-    
+
     #[inline(always)]
     pub fn set_ebus_test_mode(self) -> Self {
         self.with_set_ebus_test_mode(true)
     }
-    
+
     #[inline(always)]
     pub fn clear_dp_interrupt(self) -> Self {
         self.with_clear_dp_interrupt(true)
     }
-    
+
     #[inline(always)]
     pub fn clear_rdram_register_mode(self) -> Self {
         self.with_clear_rdram_register_mode(true)
     }
-    
+
     #[inline(always)]
     pub fn set_rdram_register_mode(self) -> Self {
         self.with_set_rdram_register_mode(true)
     }
 }
-
-
 
 bitfield! {
     #[derive(Copy, Clone, PartialEq, Eq)]
@@ -132,8 +131,6 @@ bitfield! {
         pub rsp_version: u8 [ro] @ 24..=31,
     }
 }
-
-
 
 bitfield! {
     #[derive(Copy, Clone, PartialEq, Eq)]
@@ -146,8 +143,6 @@ bitfield! {
         pub dp: bool [ro] @ 5,
     }
 }
-
-
 
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -188,32 +183,56 @@ bitfield! {
 }
 impl MaskRegWrite {
     #[inline(always)]
-    pub fn clear_sp_mask(self) -> Self { self.with_clear_sp(true) }
+    pub fn clear_sp_mask(self) -> Self {
+        self.with_clear_sp(true)
+    }
     #[inline(always)]
-    pub fn set_sp_mask(self) -> Self { self.with_set_sp(true) }
-    
+    pub fn set_sp_mask(self) -> Self {
+        self.with_set_sp(true)
+    }
+
     #[inline(always)]
-    pub fn clear_si_mask(self) -> Self { self.with_clear_si(true) }
+    pub fn clear_si_mask(self) -> Self {
+        self.with_clear_si(true)
+    }
     #[inline(always)]
-    pub fn set_si_mask(self) -> Self { self.with_set_si(true) }
-    
+    pub fn set_si_mask(self) -> Self {
+        self.with_set_si(true)
+    }
+
     #[inline(always)]
-    pub fn clear_ai_mask(self) -> Self { self.with_clear_ai(true) }
+    pub fn clear_ai_mask(self) -> Self {
+        self.with_clear_ai(true)
+    }
     #[inline(always)]
-    pub fn set_ai_mask(self) -> Self { self.with_set_ai(true) }
-    
+    pub fn set_ai_mask(self) -> Self {
+        self.with_set_ai(true)
+    }
+
     #[inline(always)]
-    pub fn clear_vi_mask(self) -> Self { self.with_clear_vi(true) }
+    pub fn clear_vi_mask(self) -> Self {
+        self.with_clear_vi(true)
+    }
     #[inline(always)]
-    pub fn set_vi_mask(self) -> Self { self.with_set_vi(true) }
-    
+    pub fn set_vi_mask(self) -> Self {
+        self.with_set_vi(true)
+    }
+
     #[inline(always)]
-    pub fn clear_pi_mask(self) -> Self { self.with_clear_pi(true) }
+    pub fn clear_pi_mask(self) -> Self {
+        self.with_clear_pi(true)
+    }
     #[inline(always)]
-    pub fn set_pi_mask(self) -> Self { self.with_set_pi(true) }
-    
+    pub fn set_pi_mask(self) -> Self {
+        self.with_set_pi(true)
+    }
+
     #[inline(always)]
-    pub fn clear_dp_mask(self) -> Self { self.with_clear_dp(true) }
+    pub fn clear_dp_mask(self) -> Self {
+        self.with_clear_dp(true)
+    }
     #[inline(always)]
-    pub fn set_dp_mask(self) -> Self { self.with_set_dp(true) }
+    pub fn set_dp_mask(self) -> Self {
+        self.with_set_dp(true)
+    }
 }

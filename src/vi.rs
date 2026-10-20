@@ -1,12 +1,12 @@
 //! RCP - Video Interface
 
+use crate::RW;
 use core::ops::Deref;
 use num_enum::{FromPrimitive, IntoPrimitive};
 use proc_bitfield::bitfield;
-use crate::RW;
 
 /// A wrapper around a mutable reference to the Video Interface's memory mapped registers.
-/// 
+///
 /// See [`VideoInterface::new()`] for usage details.
 pub struct VideoInterface {
     r: &'static mut RegisterBlock,
@@ -33,27 +33,29 @@ pub struct RegisterBlock {
 }
 impl VideoInterface {
     /// Creates a new wrapped mutable reference to the Video Interface's memory mapped registers, starting at `0xA4400000`.
-    /// 
+    ///
     /// Developers are recommended to use [`Hardware::take()`][crate::Hardware::take()] instead.
     /// But for unrestricted, unsafe, access, this struct provides a method-based version to the
     /// static functions available at the [module][crate::vi] level.
-    /// 
+    ///
     /// # Safety
     /// This provides unrestricted access to memory mapped registers. Data races _could_ occur if writing
     /// to a register in both regular code and inside interrupt handlers.
-    /// 
+    ///
     /// This is especially problematic if performing a read-modify-write operation; an interrupt
     /// could trigger between reading a register, and writing a modified value back to the same
     /// register. Thus anything written to that register inside the interrupt, would only apply for
     /// a short moment before being overwritten.
     #[inline(always)]
-    pub unsafe fn new() -> Self { Self {
-        r: &mut *(0xA4400000 as *mut RegisterBlock)
-    }}
+    pub unsafe fn new() -> Self {
+        Self {
+            r: &mut *(0xA4400000 as *mut RegisterBlock),
+        }
+    }
 }
 impl Deref for VideoInterface {
     type Target = RegisterBlock;
-    
+
     #[inline(always)]
     fn deref(&self) -> &Self::Target {
         self.r
@@ -76,7 +78,6 @@ regfn_rw!(VideoInterface, x_scale, X_SCALE, XScaleReg);
 regfn_rw!(VideoInterface, y_scale, Y_SCALE, YScaleReg);
 regfn_rw!(VideoInterface, test_addr, TEST_ADDR, u32);
 regfn_rw!(VideoInterface, staged_data, STAGED_DATA, u32);
-
 
 #[derive(IntoPrimitive, FromPrimitive, Copy, Clone, Debug, Eq, PartialEq)]
 #[repr(u8)]

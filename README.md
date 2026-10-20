@@ -13,6 +13,8 @@ Due to the low-level nature of the API, most projects (games especially) are unl
 |:----------:|:---------:|:--------:|
 |    CP0     | 32 of 32  | &#10003; |
 |    CP1     |  2 of 2*  | &#10003; |
+|    RSP     | 10 of 10  | &#10003; |
+|    RDP     |  8 of 8   | &#10003; |
 |     MI     |  4 of 4   | &#10003; |
 |     VI     | 16 of 16  | &#10003; |
 |     AI     |  6 of 6   | &#10003; |
